@@ -1,4 +1,4 @@
-# continuous_integration
+# junglefarms
 
 ## Installation
 
