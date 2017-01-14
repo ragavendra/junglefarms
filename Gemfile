@@ -4,6 +4,7 @@ gem 'sinatra'
 gem 'thin'
 gem 'rerun'
 gem 'rack'
+gem 'haml'
 
 #gem 'webrick'
 #gem 'byebug'
