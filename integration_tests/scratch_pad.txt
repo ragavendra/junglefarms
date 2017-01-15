@@ -1,0 +1,155 @@
+curl -v --cookie "cookieName=cookieValue" --header "Accept-Language: en" --header "X-Forwarded-For: 123.123.123.123" "http://localhost:8080/somepage"
+
+--cookie "cookieName=cookieValue"
+-H "Content-Type: application/json"
+-X POST -d '{"username":"xyz","password":"xyz"}'
+
+
+url='http://dockervm/accounts'
+headers='Content-Type: application/json'
+body='{"email_address": "foo@bar.com", "password": "Asdf!234", "opt_in_email": true }'
+
+# ------------------------------------------------
+## signup ##
+curl -v --header 'Content-Type: application/json' -X POST -d '{"email_address": "foo-33@bar.com", "password": "Asdf!234", "opt_in_email": true }' 'http://dockervm/accounts'
+
+curl -v --header 'Content-Type: application/json' -X POST -d '{"email_address": "foo-11@bar.com", "password": "Asdf!234", "opt_in_email": true }' 'http://localhost:9292/accounts'
+
+## fetch polling url ##
+curl -v --header 'Content-Type: application/json' 'http://dockervm/accounts/trans/c9e3e88d-12d4-4047-9f03-f6399c718523'
+
+{
+    "auth_token": "d3eea3fa-827c-423d-8c96-65c75ccdc58d",
+    "email_address": "foo-11@bar.com",
+    "links": [
+        {
+            "action": "post",
+            "type": "resend_confirmation",
+            "uri": "/accounts/resend-activation"
+        },
+        {
+            "action": "post",
+            "type": "forgot_password",
+            "uri": "/accounts/forgot-password"
+        },
+        {
+            "action": "put",
+            "type": "activate",
+            "uri": "/account"
+        }
+    ],
+    "opt_in_email_date": "2015-05-06 20:24:58 +0000",
+    "unconfirmed_email": null,
+    "uuid": "c74de3a3-97ed-49ec-8648-88b4693d4789"
+}
+
+# ------------------------------------------------
+## activate ##
+## get activation token from log/email ##
+9175f503-1dd8-4795-9d3c-ebe214b2696f
+{"confirmation_token": "9175f503-1dd8-4795-9d3c-ebe214b2696f"}
+
+curl -v --header 'Content-Type: application/json' -X POST -d '{"confirmation_token": "83784f63-9de1-4f0e-bf04-96aa944ffbff"}' 'http://dockervm/accounts/activation'
+
+curl -v --header 'Content-Type: application/json' -X POST -d '{"confirmation_token": "0425356f-4647-4da1-b044-1c7c2fd818b2"}' 'http://localhost:9292/accounts/activation'
+
+## fetch results ##
+{"polling_url":"/accounts/activation/trans/a6222545-2d07-47c0-861a-704e2dc513b5"}
+curl -v --header 'Content-Type: application/json' 'http://dockervm/accounts/activation/trans/a6222545-2d07-47c0-861a-704e2dc513b5'
+
+{
+    "email_address": "foo@bar.com",
+    "links": [
+        {
+            "action": "delete",
+            "type": "logout",
+            "uri": "/sessions"
+        }
+    ],
+    "opt_in_email_date": null
+}
+
+# ------------------------------------------------
+## login ##
+# url: /sessions
+# body: '{"email_address": "foo@bar.com", "password": "Asdf!234"}'
+# method: POST
+
+curl -v --header 'Content-Type: application/json' -X POST -d '{"email_address": "foo@bar.com", "password": "Asdf!234"}' 'http://dockervm/sessions'
+or:
+curl -v --header 'Content-Type: application/json' -X POST -d '{"email_address": "foo@bar.com", "password": "Asdf!234"}' 'http://localhost:9292/sessions'
+
+# response: {"polling_url":"/sessions/trans/85ba308c-d3a3-4bf6-a3ff-1ff64db4531e"}
+
+## fetch results ##
+curl -v --header 'Content-Type: application/json' 'http://dockervm/sessions/trans/85ba308c-d3a3-4bf6-a3ff-1ff64db4531e'
+curl -v --header 'Content-Type: application/json' 'http://localhost:9292/sessions/trans/3f37ba39-abf1-4fd1-92e5-b78c4fd9ae25'
+
+# response:
+{
+    "auth_token": "b20d0ea6-8b61-4e41-99fb-e8f791664a19",
+    "expiry_date": "2015-05-20 17:00:30 +0000",
+    "links": [
+        {
+            "action": "delete",
+            "type": "logout",
+            "uri": "/sessions"
+        }
+    ],
+    "member_id": 1
+}
+
+# ------------------------------------------------
+## get account ##
+# url: /sessions
+# body: '{"email_address": "foo@bar.com", "password": "Asdf!234"}'
+# method: GET
+## cookie "auth_token=b20d0ea6-8b61-4e41-99fb-e8f791664a19"
+curl -v --header 'Content-Type: application/json' --cookie "auth_token=b20d0ea6-8b61-4e41-99fb-e8f791664a19" 'http://dockervm/accounts'
+
+# response: {"polling_url":"/sessions/trans/417da5c4-3e21-464f-965f-f6f7f23f8789"}
+
+## fetch results ##
+curl -v --header 'Content-Type: application/json' 'http://dockervm/accounts/trans/940a38e2-fc0a-484a-8eb5-e1a459605da3'
+
+
+# ------------------------------------------------
+## edit account ##
+# url: /sessions
+# body: '{"email_address": "foo2@bar.com"}'
+# method: PUT
+## cookie "auth_token='807028cd-bb59-488e-87fb-76523bea8100'"
+
+curl -v \
+--header 'Content-Type: application/json' \
+--cookie "auth_token='9066d0cc-4eb0-4803-83ad-b1a6f9b3f24f'" \
+-X PUT -d '{"email_address": "foo33@bar.com"}' \
+'http://dockervm/accounts'
+
+curl -v \
+--header 'Content-Type: application/json' \
+--cookie "auth_token='7ccb14e5-484f-4e8f-8d55-c01730947ab2'" \
+-X PUT -d '{"email_address": "foo-44@bar.com"}' \
+'http://localhost:9292/accounts'
+
+
+# response: {"polling_url":"/accounts/trans/96c0aeac-f13f-418b-ac2f-589fc0807218"}
+
+## fetch results ##
+curl -v --header 'Content-Type: application/json' 'http://dockervm/accounts/trans/96c0aeac-f13f-418b-ac2f-589fc0807218'
+curl -v --header 'Content-Type: application/json' 'http://localhost:9292/accounts/trans/0c99f220-5a1b-4997-a4de-7a7aebfbc660'
+
+
+# ------------------------------------------------
+## confirm email edit ##
+# /accounts/confirm-email/
+# method: POST
+# cookie "auth_token='46a037d1-8b19-4637-b6a5-e434742ea17a'"
+# { "confirmation_token":"3223e354-7380-4dcf-b467-e1cafd2e1c2a" }
+
+curl -v \
+--header 'Content-Type: application/json' \
+--cookie "auth_token='46a037d1-8b19-4637-b6a5-e434742ea17a'" \
+-X POST -d '{ "confirmation_token":"3223e354-7380-4dcf-b467-e1cafd2e1c2a" }' \
+'http://localhost:9292/accounts/confirm-email'
+

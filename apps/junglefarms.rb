@@ -1,6 +1,28 @@
 require 'sinatra/base'
+require 'pony'
+require 'json'
+require 'pry'
 
 class JungleFarmsApp < Sinatra::Application
+
+	before do
+		request.body.rewind
+		@request_json = JSON.parse request.body.read
+	end
+	
+	post '/accounts' do
+		#request.body
+		#binding.pry	
+		#request.body['email_address']
+		
+		#send activation email
+		Pony.mail(:to => @request_json['email_address'], :from => 'ragavendra.bn@linuxflavour.com', :subject => 'Email verification', :body => 'Click here to activate your account')
+	end
+	
+	post '/sessions' do
+		request.body
+	end
+
 
 	get '/' do
 		haml :index
@@ -42,6 +64,11 @@ class JungleFarmsApp < Sinatra::Application
 
 	delete '/dog/:id' do
 		# HTTP DELETE request method to remove a dog who's been sold!
+	end
+
+	#more of an exception handler kind for invalid URL POSTs
+	post '/*' do
+		request.body
 	end
 
 end

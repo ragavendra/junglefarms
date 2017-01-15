@@ -1,0 +1,31 @@
+desc "List available tests"
+task :tests do
+  Dir.chdir('tests')
+  files = Dir.glob('*.rb').collect { |f| f.gsub(/\.rb$/, '') }
+
+  crud_files = []
+  crud_domains = []
+  files.each do |f|
+    f.match(/(^create|get|edit|put|delete)_(.+)/)
+    next if $2.nil?
+    crud_files << f
+    crud_files << $2 unless crud_files.include?($2)
+  end
+  crud_files.sort
+  crud_domains = crud_files.sort
+
+  (files - crud_files).each do |file|
+    puts "#{file.gsub('.rb', '')}"
+  end
+
+  crud_domains.each do |domain|
+    actions = []
+    files = Dir.glob("*_#{domain}.rb").each do |name|
+      name.match(/(.+)_#{domain}/)
+      actions << $1 unless actions.include?($1)
+    end
+    actions.sort.each do |action|
+      puts "#{action}_#{domain}"
+    end
+  end
+end

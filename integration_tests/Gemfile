@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+gem 'activesupport'
+gem 'byebug', group: [:development, :test]
+gem 'json'
+gem 'httmultiparty'
+gem 'parallel'
+
+gem 'sequel',       '4.22.0'
+gem 'mysql2',       '0.3.18'
