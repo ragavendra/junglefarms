@@ -5,11 +5,27 @@ require 'pry'
 
 class JungleFarmsApp < Sinatra::Application
 
+	#filters for all
 	before do
 		request.body.rewind
 		@request_json = JSON.parse request.body.read
+		puts "hi, I am in before of all"
+	end
+
+	#filters for each
+	before '/accounts' do
+		#authenticate!
+		puts "hi, I am in before of accounts"
+	end
+
+	#handlers
+	post '/accounts' do
+	#get '/accounts' do
+		puts "hi, I am in post accounts"
+		redirect '/sessions'
 	end
 	
+=begin
 	post '/accounts' do
 		#request.body
 		#binding.pry	
@@ -18,11 +34,23 @@ class JungleFarmsApp < Sinatra::Application
 		#send activation email
 		Pony.mail(:to => @request_json['email_address'], :from => 'ragavendra.bn@linuxflavour.com', :subject => 'Email verification', :body => 'Click here to activate your account')
 	end
-	
+=end
+
 	post '/sessions' do
+		puts "hi, I am in post sessions"
 		request.body
 	end
 
+enable :sessions
+
+	get '/sessions' do
+		  
+		session['counter'] ||= 0
+		session['counter'] += 1
+		"You've hit this page #{session['counter']} times!" 
+		
+		puts "hi, I am in get sessions for #{session['counter']} times!"
+	end
 
 	get '/' do
 		haml :index
