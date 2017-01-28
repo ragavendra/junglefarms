@@ -2,26 +2,18 @@
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Install bundler
 
-gem 'junglefarms'
+`$ gem install bundler`
 
-And then execute:
+Install gems
 
-$ bundle
-
-Or install it yourself as:
-
-$ gem install junglefarms.gem
+`$ bundle install`
 
 ## Usage
 
 Starting the server
-```ruby
-server = junglefarms.run
-```
+`rerun rackup`
 
 Shutting it down
-```ruby
-junglefarms.shutdown_server server
-```
+`Ctrl + C`
