@@ -23,6 +23,9 @@ No arguments:
 ```
 > cd integration_test
 > HOSTNAME=dockervm PORT=443 ruby tests/signup.rb
+>
+> For custom email signup set it by env var
+> EMAIL="username@foo.com" HOSTNAME=localhost PORT=9292 ruby tests/signup.rb user_email_sign_up
 ```
 
 Arguments:
