@@ -28,6 +28,12 @@ No arguments:
 > EMAIL="username@foo.com" HOSTNAME=localhost PORT=9292 ruby tests/signup.rb user_email_sign_up
 ```
 
+Get session
+
+```
+> HOSTNAME=localhost PORT=9292 ruby tests/get_session.rb username@foo.com pAssw0rd
+```
+
 Arguments:
 
 ```
